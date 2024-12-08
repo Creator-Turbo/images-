@@ -3,10 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resize Image</title>
+    <title>Resize and Save Image</title>
 </head>
 <body>
-    <!-- Display and resize the image -->
-    <img src="Layer 4.png" alt="Image" width="256" height="256">
+    <h1>Resize and Save an Image</h1>
+    <input type="file" id="upload" accept="image/*">
+    <canvas id="canvas" style="display:none;"></canvas>
+    <a id="download" style="display:none;">Download Resized Image</a>
+
+    <script>
+        const upload = document.getElementById("upload");
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const download = document.getElementById("download");
+
+        upload.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const img = new Image();
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    img.src = e.target.result;
+                };
+
+                img.onload = function () {
+                    // Set the new dimensions
+                    const width = 256;
+                    const height = 256;
+
+                    // Resize canvas
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    // Draw resized image
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Display the download link
+                    const dataURL = canvas.toDataURL("image/png");
+                    download.href = dataURL;
+                    download.download = "resized_image.png";
+                    download.style.display = "block";
+                    download.textContent = "Download Resized Image";
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 </body>
 </html>
